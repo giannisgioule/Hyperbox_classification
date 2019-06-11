@@ -12,7 +12,7 @@ $offecho
 *$set dataset compound
 
 *-----------------------2 Features, 300 samples, 3 classes----------------------
-$set dataset pathbased
+*$set dataset pathbased
 
 *-----------------------2 Features, 788 samples, 7 classes----------------------
 *$set dataset aggregation
@@ -22,6 +22,8 @@ $set dataset pathbased
 
 *----------------------2 Features, 1000 samples, 2 classes----------------------
 *$set dataset synthetic_2
+
+$set dataset input
 
 *===============================================================================
 

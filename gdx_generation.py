@@ -91,6 +91,7 @@ def generate_gdx(dataset):
         
     input_data[2].dataframe=values
     
+    dataset.index=s_val.index
     input_data[3].dataframe=pd.concat([s_val,dataset.iloc[:,number_predictors]],axis=1)
     
     # Identify the different number of classes in the label
