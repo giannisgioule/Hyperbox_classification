@@ -57,24 +57,26 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[RP:DATA_MINING]
-1=
-
-[MRUFILES]
-1=C:\Users\Ioannis\Desktop\Classification\Hyperbox\input.gdx
-2=C:\Users\Ioannis\Desktop\Classification\Hyperbox\compound.gdx
-3=C:\Users\Ioannis\Desktop\Classification\GAMS\aggregation.gdx
-4=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.lst
-5=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.gms
-6=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.gms
-7=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.lst
-
 [OPENWINDOW_1]
-FILE0=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.gms
-FILE1=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.lst
-FILE2=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.lst
 MAXIM=0
 TOP=50
 LEFT=50
 HEIGHT=896
 WIDTH=1334
+
+[RP:TREE_CLASSIFICATION]
+1=
+
+[RP:DATA_MINING]
+1=
+
+[MRUFILES]
+1=C:\Users\Ioannis\Desktop\Classification\Hyperbox\input.gdx
+2=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.lst
+3=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.gms
+4=C:\Users\Ioannis\Desktop\Classification\Hyperbox\compound.gdx
+5=C:\Users\Ioannis\Desktop\Classification\GAMS\aggregation.gdx
+6=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.lst
+7=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.gms
+8=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.gms
+9=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.lst

@@ -106,7 +106,9 @@ parameter misclassified;
 
 misclassified(s)=(E.l(s)+eps)$(E.l(s)=0);
 
-display objective.l,LE.l,X.l,E.l,Y.l,misclassified;
+display objective.l,LE.l,x.l,E.l,Y.l,misclassified;
+
+execute_unload "results.gdx",x.l,LE.l ;
 *===============================================================================
 *-----------------------------------END MODEL-----------------------------------
 *===============================================================================
