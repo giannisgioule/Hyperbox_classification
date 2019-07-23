@@ -96,10 +96,10 @@ model data_mining /eq1,eq2,eq3,eq4,obj/;
 *===============================================================================
 option mip=cplex;
 option optcr=0.0;
-option Limrow =4000;
+option Limrow =100;
 option reslim=200;
 *===============================================================================
-
+E.fx('s7')=1;
 solve  data_mining using MIP minimizing objective;
 
 parameter misclassified;
