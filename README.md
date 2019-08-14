@@ -11,7 +11,7 @@ This implementation uses the following libraries-software
 
 |Software|Version
 |--------|-------
-|GAMS    |v.24.7.1
+|Pyomo    |v.5.6.6
 |CPLEX|v.12.8.0.0
 |python|v.3.6.5
 |pandas|v.0.23.4
