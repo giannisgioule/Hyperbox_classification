@@ -284,12 +284,12 @@ class HyperboxClassifier():
 
         return self
 
-    def predict(self,X_test):        
+    def predict(self,X):        
 
         # For each sample, the prediction checks if the values of the sample
         # are in the range of one of the hyperboxes.
                 
-        X=check_array(X_test)
+        X=check_array(X)
         check_is_fitted(self,'is_fitted_')  
 
         names=getattr(self,"names_")
@@ -354,6 +354,6 @@ class HyperboxClassifier():
 
             return box
 
-        predictions=identify_class(X_test,hyperboxes.vertices,hyperboxes.x)                
+        predictions=identify_class(X,hyperboxes.vertices,hyperboxes.x)                
 
         return predictions
