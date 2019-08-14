@@ -70,13 +70,16 @@ WIDTH=1334
 [RP:DATA_MINING]
 1=
 
+[RP:OPTIMAL_HYPERBOX_MODEL]
+1=
+
 [MRUFILES]
-1=C:\Users\Ioannis\Desktop\Classification\Hyperbox\input.gdx
-2=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.lst
-3=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.gms
-4=C:\Users\Ioannis\Desktop\Classification\Hyperbox\compound.gdx
-5=C:\Users\Ioannis\Desktop\Classification\GAMS\aggregation.gdx
-6=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.lst
-7=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.gms
-8=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.gms
-9=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.lst
+1=C:\Users\Ioannis\Desktop\Classification\Hyperbox\optimal_hyperbox_model.gms
+2=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.gms
+3=C:\Users\Ioannis\Desktop\Classification\Hyperbox\input.gdx
+4=C:\Users\Ioannis\Desktop\Classification\Hyperbox\data_mining.lst
+5=C:\Users\Ioannis\Desktop\Classification\Hyperbox\compound.gdx
+6=C:\Users\Ioannis\Desktop\Classification\GAMS\aggregation.gdx
+7=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.lst
+8=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_mining.gms
+9=C:\Users\Ioannis\OneDrive - University College London\GAMS\Data_classification\data_clas_test_iterative.gms
