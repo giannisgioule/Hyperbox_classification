@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os        
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils.multiclass import unique_labels
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
@@ -37,6 +38,7 @@ class HyperboxClassifier():
     def __init__(self):
         pass
 
+    #===============================Fit method================================    
     def fit(self,X,y):
 
         class Boxes():
@@ -46,25 +48,30 @@ class HyperboxClassifier():
                 self.x=x
                 self.vertices=vertices
 
+        #---------------------------------------------------------------------
         def define_vertices(LE,x):
-            # This function requires the LE (length) and x (central coordinates) of
-            # each hyperbox and calculates the coordinates of all the vertices
+            # This function requires the LE (length) and x (central coordinates)
+            # of each hyperbox and calculates the coordinates of all the vertices
             number_of_boxes=np.unique(LE['i'])
             vertices={}
             for box in number_of_boxes:
-                lower_limits=list(x[x['i']==box]['Level']-(LE[LE['i']==box]['Level']/2))
-                upper_limits=list(x[x['i']==box]['Level']+(LE[LE['i']==box]['Level']/2))
+                lower_limits=list(x[x['i']==box]['Level']-(LE[LE['i']==box]\
+                    ['Level']/2))
+                upper_limits=list(x[x['i']==box]['Level']+(LE[LE['i']==box]\
+                    ['Level']/2))
                 vertices.update({box:([lower_limits],[upper_limits])})
                 
             return vertices
+        #---------------------------------------------------------------------            
 
+
+        #---------------------------------------------------------------------
+        # This function generates the data in an appropriate format to 
+        # be included in pyomo. This function converts the class names
+        # into numbers to be processed by pyomo. The original names are
+        # substituted back again in a later stage
         def generate(dataset):
-            #-----------------------------------------------------------------
-            # This function generates the data in an appropriate format to 
-            # be included in pyomo. This function converts the class names
-            # into numbers to be processed by pyomo. The original names are
-            # substituted back again in a later stage
-            #-----------------------------------------------------------------
+
 
             # The number of predictors in the set
             number_predictors=dataset.shape[1]-1 
@@ -132,8 +139,10 @@ class HyperboxClassifier():
             }}
 
             return data,original_boxes,boxes            
+        #---------------------------------------------------------------------
+        
 
-         
+        #----------------------Pyomo optimisation model-----------------------
         def pyomo_model(data,boxes,original_boxes):
             
             model=AbstractModel()
@@ -239,9 +248,34 @@ class HyperboxClassifier():
             LE["i"]=LE["i"].replace(boxes,original_boxes)
             #-----------------------------------------------------------------
 
-            return x,LE     
+            return x,LE    
+        #---------------------------------------------------------------------  
+        
+        # By default, the algorithm scales the input variables in the range
+        # [0,1]. This is done in order to aid the optimisation and the bigM
+        # constraints.
 
-        #-----------------------Save the variable names-----------------------
+        # So, at the end of the optimisation, the regression coefficients
+        # and intercepts of each region are scaled back to reflect the 
+        # original data.                
+        
+        #---------------------------------------------------------------------
+        # This method unscales the values of the central coordinates (x) 
+        # of the hyperboxes
+        def unscale_values(vector):    
+            variables=np.unique(vector['m'])
+            for i,j in enumerate(variables):
+                b={}
+                to_replace=vector['Level'][vector['m']==j]
+                value=(vector['Level'][vector['m']==j]*(scaler.data_max_[i]-\
+                    scaler.data_min_[i])+scaler.data_min_[i])
+                [b.update({i:j}) for i,j in zip(to_replace,value)]
+                vector['Level']=vector['Level'].replace(to_replace=b,value=None)
+                
+            return vector
+        #---------------------------------------------------------------------                      
+        
+        #---------------------Main part of the fit method---------------------        
         v_names=False
         if(isinstance(X,pd.DataFrame)):
             variable_names=X.columns
@@ -253,6 +287,9 @@ class HyperboxClassifier():
             o_name=True
         
         X,y=check_X_y(X,y)
+        scaler=MinMaxScaler(feature_range=(0,1))
+        scaler.fit(X)
+        X=scaler.transform(X)                        
         X=pd.DataFrame(X)        
         y=pd.DataFrame(y)                
         if(v_names is True):
@@ -266,14 +303,14 @@ class HyperboxClassifier():
         if(v_names is True):        
             self.names_=variable_names
         else:
-            self.names_=False  
-        #---------------------------------------------------------------------
+            self.names_=False          
         
         self.classes_=unique_labels(y)                
         X=pd.concat([X,y],axis=1)                
 
         input_data,original_boxes,boxes=generate(X)
-        x,LE=pyomo_model(input_data,boxes,original_boxes)
+        x,LE=pyomo_model(input_data,boxes,original_boxes)                        
+        x=unscale_values(x)
 
         hyperboxes=Boxes(LE,x)
         box_vertices=define_vertices(hyperboxes.LE,hyperboxes.x)
@@ -283,7 +320,11 @@ class HyperboxClassifier():
         self.model_=hyperboxes
 
         return self
+        #---------------------------------------------------------------------
+    # End of fit method
+    #=========================================================================
 
+    #=============================Predict method==============================
     def predict(self,X):        
 
         # For each sample, the prediction checks if the values of the sample
@@ -357,3 +398,5 @@ class HyperboxClassifier():
         predictions=identify_class(X,hyperboxes.vertices,hyperboxes.x)                
 
         return predictions
+    # End of printing equations
+    #=========================================================================                
