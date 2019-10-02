@@ -1,4 +1,5 @@
 from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.preprocessing import MinMaxScaler
 from scipy.spatial import distance
 from operator import itemgetter
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
@@ -35,8 +36,8 @@ class GamsHyperboxClassifier():
     def __init__(self):
         pass
     
+    #===============================Fit method================================    
     def fit(self,X,y):        
-
 
         class Boxes():
 
@@ -45,17 +46,24 @@ class GamsHyperboxClassifier():
                 self.x=x
                 self.vertices=vertices
 
+        #---------------------------------------------------------------------
         # This function calculates the coordinates of the vertices
         # of the hyperboxes. This is usefull for predictions
         def define_vertices(LE,x):
             number_of_boxes=np.unique(LE['i'])
             vertices={}
             for i in number_of_boxes:
-                lower_limits=list(x[x['i']==i]['Level']-(LE[LE['i']==i]['Level']/2))
-                upper_limits=list(x[x['i']==i]['Level']+(LE[LE['i']==i]['Level']/2))
+                lower_limits=list(x[x['i']==i]['Level']-(LE[LE['i']==i]\
+                    ['Level']/2))
+                upper_limits=list(x[x['i']==i]['Level']+(LE[LE['i']==i]\
+                    ['Level']/2))
                 vertices.update({i:([lower_limits],[upper_limits])})
                 
             return vertices
+        #---------------------------------------------------------------------
+
+        #---------------------------------------------------------------------
+        # This function generates the .gdx file with all the input data        
         def generate_gdx(dataset):                   
                     
             # The number of predictors in the set
@@ -120,8 +128,33 @@ class GamsHyperboxClassifier():
             #-----------------------------------------------------------------
             
             return(".gdx file has been generated")
+        #---------------------------------------------------------------------
 
-        #-----------------------Save the variable names-----------------------
+        # By default, the algorithm scales the input variables in the range
+        # [0,1]. This is done in order to aid the optimisation and the bigM
+        # constraints.
+
+        # So, at the end of the optimisation, the regression coefficients
+        # and intercepts of each region are scaled back to reflect the 
+        # original data.                
+        
+        #---------------------------------------------------------------------
+        # This method unscales the values of the length (LE) and central 
+        # coordinates (x) of the hyperboxes
+        def unscale_values(vector):    
+            variables=np.unique(vector['m'])
+            for i,j in enumerate(variables):
+                b={}
+                to_replace=vector['Level'][vector['m']==j]
+                value=(vector['Level'][vector['m']==j]*(scaler.data_max_[i]-\
+                    scaler.data_min_[i])+scaler.data_min_[i])
+                [b.update({i:j}) for i,j in zip(to_replace,value)]
+                vector['Level']=vector['Level'].replace(to_replace=b,value=None)
+                
+            return vector
+        #---------------------------------------------------------------------
+
+        #---------------------Main part of the fit method---------------------
         v_names=False
         if(isinstance(X,pd.DataFrame)):
             variable_names=X.columns
@@ -133,6 +166,9 @@ class GamsHyperboxClassifier():
             o_name=True
         
         X,y=check_X_y(X,y)
+        scaler=MinMaxScaler(feature_range=(0,1))
+        scaler.fit(X)
+        X=scaler.transform(X)                
         X=pd.DataFrame(X)        
         y=pd.DataFrame(y)                
         if(v_names is True):
@@ -146,8 +182,7 @@ class GamsHyperboxClassifier():
         if(v_names is True):        
             self.names_=variable_names
         else:
-            self.names_=False  
-        #---------------------------------------------------------------------
+            self.names_=False          
         
         self.classes_=unique_labels(y)                
         X=pd.concat([X,y],axis=1)                
@@ -160,6 +195,9 @@ class GamsHyperboxClassifier():
 
         LE=results['LE']
         x=results['x']
+        LE=unscale_values(LE)
+        x=unscale_values(x)
+
         hyperboxes=Boxes(LE,x)
         box_vertices=define_vertices(hyperboxes.LE,hyperboxes.x)
         hyperboxes.vertices=box_vertices
@@ -170,8 +208,12 @@ class GamsHyperboxClassifier():
 
         self.is_fitted_=True
         self.model_=hyperboxes
+        #---------------------------------------------------------------------
+    # End of fit method
+    #=========================================================================
         
-
+    
+    #=============================Predict method==============================
     def predict(self,X):        
 
         # For each sample, the prediction checks if the values of the sample
@@ -212,14 +254,19 @@ class GamsHyperboxClassifier():
                         number_predictors) and (sum([ x<=y for (x,y) \
                             in zip(a[0], c[0])])==number_predictors)):  
                         testing_class.append(i)
+                        if(testing_class[testing].isdigit()):
+                            testing_class[testing] = float(testing_class[testing])
                         break    
                     else:
-                        # Unassigned samples will be assigned to the closest hyperbox.
-                        # The closest hyperbox is the one with the min euclidean distance
-                        # between its' centre and the sample                    
+                        # Unassigned samples will be assigned to the closest 
+                        # hyperbox. The closest hyperbox is the one with the 
+                        # min euclidean distance between its' centre and the 
+                        # sample                    
                         testing_class.append(unassigned_samples\
                             (testing_samples[testing],\
                                 box_centres,number_predictors))
+                        if(testing_class[testing].isdigit()):
+                            testing_class[testing] = float(testing_class[testing])
                         break
 
             return testing_class
@@ -245,3 +292,5 @@ class GamsHyperboxClassifier():
         predictions=identify_class(X,hyperboxes.vertices,hyperboxes.x)                
 
         return predictions
+    # End of printing equations
+    #=========================================================================        
