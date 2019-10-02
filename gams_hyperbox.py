@@ -194,8 +194,7 @@ class GamsHyperboxClassifier():
         results=gd.to_dataframes('results.gdx')
 
         LE=results['LE']
-        x=results['x']
-        LE=unscale_values(LE)
+        x=results['x']        
         x=unscale_values(x)
 
         hyperboxes=Boxes(LE,x)

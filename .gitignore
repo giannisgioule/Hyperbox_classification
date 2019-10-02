@@ -1,12 +1,8 @@
-*.png
 *.opt
 *.lst
 *.lxi
 *.~gm
 *.log
-*.pdf
-*.docx
-*.jpg
-__pycache__
+__pycache__/
 .ipynb_checkpoints
 .gitignore
