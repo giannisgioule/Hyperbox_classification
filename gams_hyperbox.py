@@ -208,6 +208,8 @@ class GamsHyperboxClassifier():
 
         self.is_fitted_=True
         self.model_=hyperboxes
+
+        return self
         #---------------------------------------------------------------------
     # End of fit method
     #=========================================================================

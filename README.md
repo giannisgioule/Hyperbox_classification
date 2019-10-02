@@ -27,10 +27,10 @@ from gams_hyperbox import GamsHyperboxClassifier
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_iris
 
-X=load_breast_cancer()['data']
-y=load_breast_cancer()['target']
+X=load_iris()['data']
+y=load_iris()['target']
 
 X_train,X_validation,y_train,y_validation=train_test_split(X,y,test_size=0.2,random_state=1)
 
