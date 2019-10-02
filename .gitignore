@@ -1,7 +1,0 @@
-*.opt
-*.lst
-*.lxi
-*.~gm
-*.log
-.__pycache__
-.ipynb_checkpoints
