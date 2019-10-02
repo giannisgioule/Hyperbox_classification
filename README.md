@@ -15,6 +15,7 @@ This implementation uses the following libraries-software
 |python|v.3.6.5
 |gdxpds|v.1.1.0
 |pandas|v.0.23.4
+|scipy|v.1.2.0
 |numpy|v.1.15.4
 |scikit-learn|v.0.21.0
 
